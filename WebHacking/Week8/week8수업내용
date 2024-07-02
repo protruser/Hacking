@@ -1,0 +1,175 @@
+SQL Injection : Data 추출
+
+> Union
+: SQL 질의 결과가 화면에 출력되는 경우!
+
+> Error Based
+: SQL 에러가 발생하는 경우
+
+> blind
+: 두개 다 아닐 경우
+
+우리가 원하는 select 문을 실행하는 것!
+> select
+
+* 수업 노트 참고 복습
+* 보충 수업.
+
+* Blind SQL Injection
+
+** 오늘 수업 : 이해가 안된다?
+>SQL Injection
+
+* SQL Injection Point 찾기.
+
+- DB에게 SQL 질의문을 사용하는 곳
+DB에서 오는 데이터인지, 웹 페이지에 고정된 데이터인지 확인해야함
+
+- 파라미터
+
+where user_id like '%____%' and '1'
+
+nor
+nor%' and '1%'= '1
+
+두 검색 결과가 같다면 SQL Injection이 가능하다.
+
+http://ctf.segfaulthub.com:7777/findSQLi_1/
+> 찾았다면,
+> 주소와 어디 파라미터, 데이터
+> 참 / 거짓 조건 삽입 가능
+
+* 힌트 : 게시판은 아님
+
+'1' and extractvalue('1', concat(0x3a, database())) and '1' = '1'
+
+'normaltic' and (char_length(database()) = 3) and '1' = '1'
+
+insert
+
+select ~~~~~~~~~
+where userid ='____'
+
+파라미터, 쿠키 등 무엇이든 SQL 질의로 데이터를 가져오는 곳이라면 Point가 존재할 수 있음
+
+(+)
+생각을 해보기!
+
+http://ctf.segfaulthub.com:7777/findSQLi_2/
+
+Hint : 회원가입 후, 로그인해서 게시판을 확인해보세요.
+> SQL Injection Point 찾기!
+
+** 서버 측에서 어떤 SQL 질의문이 완성되는지
+생각해보기!!
+
+<burp 에러 해결>
+Convert HTTPS links to HTTP
+연필 모양을 누르고 use HTTPS 해제
+
+
+option_val=title
+board_result=test
+
+select
+where ___ like '%sfUser%'
+모의해킹할 때, 주석은 웬만해서는 넣어주지 않는게 좋음
+
+'1'='1' and title
+
+_____________________________
+
+1. cookie
+2. column 이름에 SQL Injection
+
+option_val=username
+board_result=sfUser
+sort=title
+
+where username like '%sfUser%'
+
+order by title
+
+****참/거짓 조건
+
+<order by 절에서 SQL Injection을 하려면 참 거짓 조건 가능>
+
+case when (조건) then (참일 때) else (거짓일 때) end
+case when (1=2) then 1 else 2 end
+
+case when (1=1) then 1 else (select 1 union select 2) end
+라는 오류를 일부러 냄
+
+order by에서
+(select 1) 과 1은 똑같음
+(select 1 union select 2)는 여러개의 row가 등장해서 에러가 남
+(select 1 union select 2 where (1=2)) 뒤의 where절이 거짓이면 select 2는 무시, 반대는 참
+
+error 유발.
+(select 1 union select 2)
+_____________________________
+
+1. cookie, HTTP 요청 헤더
+2. column
+3. order by 절 SQL Injection
+
+_____________________________
+
+* SQL Injection 대응 방법
+1. Prepared Statement
+>
+select ~~~
+where id ='____'
+
+컴파일 해둠.
+101010010_________
+010101010011001
+
+전! 혀! 불가능.
+>
+
+1. prepare statement를 잘못쓴 경우.
+select
+where id='____'
+
+prepare Statement
+
+2. prepared Statement 못 쓰는 경우.
+- order by
+- table 이름, column 이름
+
+where ___ like
+
+
+대응 방법2
+2. White List Filtering
+필터링 : 단어
+
+화이트 > 특정 단어만 쓸 수 있게 하는 것.
+블랙 > 특정 단어를 못 쓰게 하는 것
+
+if (sort == 'title') {
+  elif(sort == 'author')
+  else {
+    sort=='title'
+  }
+}
+같은 느낌으로
+
+
+order by ___
+
+_____________________________
+| SQL Injection
+>
+
+8주차 과제
+
+1. 오늘 수업 정리
+2. SQL Injection 공격 기법 정리
+3. 심화 문제 풀이
+| SQL Injection Advanced
+
++ 휴식 과제
+1. 웹 개발
+> 게시판 (검색)

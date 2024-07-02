@@ -1,0 +1,219 @@
+1. 로그인 페이지 꾸미기.
+> 하드코딩 로그인 페이지.
+css / Javascript
+
+** 1 주차 복습.
+Web WAS DB
+웹 서버 : 정적 페이지를 전달해주는 역할
+WAS : 동적 페이지를 전달해주는 역할 php asp jsp
+DB : 데이터 저장
+
+** 웹 서버로 파일을 요청하는 방법
+url
+[protocol]://[IP or Domain]:[Port]/[경로]
+?[파라미터 이름]=[파라미터 값]
+-> 파라미터가 뜨면 GET 방식
+요청을 하고 필요한 데이터를 전달하는 것이 Parameter
+
+GET방식
+POST방식
+
+port 생략이 가능 웰논포트 http -> 80, https -> 443
+var/www/html
+
+*과제
+
+sftp : file transport 전송기능. 바로 파일을 던질 수 있음
+컨테이너 아이디 맨앞에 있음 b1~~~ 다 쓰지 않아도됨
+sudo docker rm -f b1
+
+dockerCMD 있는 경로에서 ./dockerCMD & 치셈
+
+index.php 페이지를 하나 만들어둠
+로그인을 했으면 인덱스페이지로 이동 index.php
+로그인을 안했으면 로그인 페이지로 이동 login_page.php
+index 페이지가 사실 main page
+
+로그인 id가 null 값이면 되돌아가게 만듦
+header() 함수
+응답 헤더에다가 header 안에 쓰는 내용을 넣어줌.
+예시)header("location:login.php"); login.php로 리다이렉트
+그리고 exit; 를 써야 뒤에있는 코드가 실행되지 않음
+
+form 태그 action에 아무것도 안넣으면("") 자기 자신에게 전달 method="post"
+
+$_POST['Submit']
+$login_res=login1($_POST['UserID'],$_POST['UserPass']) -> login1이 함수임
+require_once('login_func.php')
+함수를 담당하는 php 파일을 하나 만들었음
+
+
+에러! 발견!
+
+1. 에러 출력 : php error 출력
+2. echo 화면에 프린트하는 함수 화면에 한번 찍어보는 과정을 거치는게 좋음
+
+
+____________________________________________________
+2주차 진도
+
+Database
+> 데이터를 저장한다!
+WAS가 동적페이지를 만들기 위해서 DB에게 요청을 한 다음 데이터를 받아서 화면에 찍어줌
+
+DB : 엑셀
+
+-Database
+> 엑셀 파일. -> 데이터를 보관하는 하나의 큰 단위
+
+- Table
+> 엑셀 시트
+학생 등록 정보, 물건 정보
+
+
+- Column
+> 열, 데이터 종류, 카테고리
+예시) 순번, 이름, 점수
+>세로
+
+- Row
+> 행, 가로 데이터
+- 데이터 한 세트
+
+
+apache php mysql 구조
+mysql을 웹페이지에서 관리할 수 있게 만든 시스템이 phpmyadmin
+IP:Port/phpmyadmin 으로 들어감 (sudo ./docker &) 필요
+
+아이디 : admin
+비밀번호 : student1234
+
+
+utf8_general_ci
+인덱스 primary
+A.I 자동 숫자 증가
+
+idx 비워두면 알아서 됨
+
+
+* 앞으로 WAS를 만들고 DB에게 어떤 명령을 하게 만들것임
+
+SQL
+select : 데이터를 가져온다.
+
+******* select [컬럼 이름] from [테이블 이름]
+
+select name from test_table;
+select name, pass from test_table;
+select * from test_table;
+
+*은 모든 컬럼의 데이터 출력
+
+## insert
+데이터를 넣는 명령어
+회원가입 할 때, 글을 저장할 때
+
+insert into [테이블 이름] (컬럼 이름) value (값)
+
+insert into test_table (name, score, pass) value ('doldol', '80', '2222')
+
+insert into test_table value (NULL, 'dangdol', '70', '3333')
+
+
+# 정교한 select : where
+
+where 구문.
+
+select ~~~ from [테이블] where [조건]
+
+[조건] -> name='normaltic'
+
+name='normaltic' and pass='1234' : 앞 뒤 조건 둘다 맞는 데이터
+name='normaltic' or pass='1234' : 앞 뒤 조건 둘 중 하나만 맞아도 되는 데이터
+
+SQL
+select, insert, where 조건문
+
+
+____________________________
+
+WAS -- DB 연결
+>php mysql
+
+WAS가 db에게 이야기를 하기 위해서는 (DB의) id와 비밀번호를 알고있어야함
+Web Server  WAS   DB
+보통 따로 컴퓨터를 쓰기 때문에 db의 localhost 주소를 써주는게 당연함
+
+mysqli_connect(서버, 아이디, 비번, db명)
+
+php 언어로 db에서 데이터를 가져오는 방법
+1. DB에게 이야기. SQL
+나는 인증된 사람.(티켓 = 디스크립터 = 핸들러)
+그러니까 대답해!
+(아이디, 비밀번호.)
+
+mysqli_connect('localhost') or mysqli_connect('127.0.0.1')
+
+mysqli_connect('주소','ID','PW','DB이름')
+
+
+다시 was는 db와 연결하려면 로그인을 해야함
+db의 id와 비밀번호를 WAS가 가지고 있음
+
+$db_conn = mysqli_connect('localhost', 'admin', 'student1234', 'test');
+
+(위와 아래는 같은 코드임)
+
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'admin');
+define('DB_PASSWORD', 'student1234');
+define('DB_NAME', 'test');
+$db_conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+
+if($db_conn) {
+  echo "DB Connect OK"
+} else {
+  echo "DB Connect Fail"
+}
+
+$sql = "select name from test where name='dangdol'";
+티켓을 받았으니 구문을 작성할 차례
+
+$result = mysqli_query($db_conn, $sql); db를 실행시키고 싶으면 이런 구문을 작성함 그리고 바닥에 버릴 것이 아니라 변수로 받아줌
+
+$row = mysqli_fetch_array($result); 한줄만 가져옴(위에서 부터 차례대로 가는 순서로)
+맨위에 줄만 출력이 되니까 where 이라는 것이 필요함
+sql 쿼리의 결과문이 하나여도 fetch를 사용해서 끄집어 내야함
+
+(참고) var_dump($result); 는 아마도 출력하는 구문
+
+echo "Name : " . $row['name'];
+-> echo 화면에 띄워줌
+-> .(점) - 두개를 연결해줌
+
+
+
+______________________________________________
+[  ] -> 객체
+
+** 정리.
+>Databasae
+> SQL : select, insert, where
+
+admin / student1234
+
+>php에서 DB에 SQL 실행하는 방법 (select)
+
+
+2주차 과제
+[1] 복습 (Database, SQL)
+[2] 학생 이름과 점수가 들어있는 DB를 만들고 GET방식으로 학생의 이름을 넣으면 점수가 출력되는 것을 만들기
+[3] 회원가입 페이지 만들기 (기능 구현)
+[4] 로그인 페이지 (DB 연동)
+
++ 추가 미션 (심심하면)
+-> 가입한 나의 정보를 보는 "마이페이지" 개발
+password는 안보이고 이름 이메일 정도만 보이게
+
+* 주석, 변수이름

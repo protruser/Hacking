@@ -1,0 +1,56 @@
+* 문제 풀이
+
+모두 해결을 해야 내 공부가 끝난다.
+
+쉽게 풀 수
+못푸는
+
+워게임
+| 10분만에 풀었다!
+-> 시간낭비. => 의미가 전혀 없다.
+
+무작정 못 푸는 문제
+=> 의욕 떨어짐
+
+* 가지고 있는 지식.
+
+| 풀이를 보는 것보다
+차라리 못푸는게
+
+* 어떻게 고민해야하나!
+
+생각 -> 웹 서버.
+실험 -> mysql sql
+
+echo
+
+로그인 bypass 3
+> 식별 / 인증 분리
+DB 정보를 추출하는 문제가 아님
+다른 방법으로 풀었으면 좋겠다.
+
+payload - 대충 정답 시도 코드
+
+DB 마다 주석 기호가 다름
+
+
+where id = '' and pass =''
+
+where pass ='' and id ='' 다르다
+
+bypass 5
+doldol' order by 2000000#
+
+dol1234
+'
+
+select * from member
+where id = '' \n and pass =''
+
+select name, pass from login2 where id ='doldol' order by 99999#
+
+____________________________________________________________
+
+SQL Injection으로 DB에서 데이터를 추출하는 방법을 배움
+
+직접 DB를 만들어 보고 실습을 꼭 해봐야함

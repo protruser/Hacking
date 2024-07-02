@@ -1,0 +1,64 @@
+7주차 코칭.
+
+* SQL Injection :
+Union
+> SQL 질의문 결과가 화면에 출력되는 곳!
+
+> 게시판에서 사용하는게 UNION SQLI (x)
+마이페이지, 데이터 하나만 출력되는 곳도 가능
+
+ID -> 점수
+
+> 웹 개발 경험.
+
+UNION
+> rule : 컬럼 개수!
+-> order by
+-> union select null,null,null #
+
+> select 한 번 더
+
+
+* SQL Injection :
+Error Based
+> SQL 에러 메세지 활용. 데이터를 추출
+__________________________________________
+
+그 외의 기법들을 활용해서 데이터를 추출하는 방법
+
+'normaltic' and (ascii(substr((select column_name from information_schema.columns where table_name='game' limit 0,1) ,1,1))>0) and '1' = '1'
+
+_ python : 기본 문법.
+
+__________________________________________
+
+* Q&A : 질문 타임
+왜 SQLi 아직도 취약점이 나올까?
+
+* Burp Suite History
+
+select id, name, pass from member ~~
+
+DB 이름을 찾을 때,
+칼럼 위치마다 나오는 부분이 조금씩 다른데.
+
+공격 증명용.
+python script.
+
+흠...... Login bypass 2가 order by나 limit가 적용이 되지 않는 이유.
+는 한번 알아보기
+
+
+.
+segfault
+member
+
+select * from segfault.member
+
+UNION SQLi
+데이터가 찍히면 union을 사용하고 그렇지 않으면
+이번주차에서 배우는 것을 사용하면 된다.
+
+
+7주차 : SQLi
+8주차 : SQL 취약점을 찾는 연습.

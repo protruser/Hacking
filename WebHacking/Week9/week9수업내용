@@ -1,0 +1,300 @@
+* SQL Injection
+
+- SQL Injection Point
+> ' and '1' = '1
+
+> 웹 페이지.
+-> SQL 질의문을 사용하는 곳.
+-> 서버 측 SQL 질의문 추론 후 공격 시도.
+
+->
+search.naver
+?where=nexearch&sm=top_hty&fbm=0&ie=utf8
+
+&query=normaltic
+
+select ~~~ from ~~~~
+where keyword like '%___%'
+
+->
+boardRead.php?boardIdx=65
+
+select
+where idx=__    (1)
+where idx='___' (2)
+
+65 and 1=1
+65' and '1' = '1
+64+1
+65/**/and/**/1=1
+
+
+* SQL Injection
+SQL 질의문 삽입.
+
+select * from member
+
+* SQL 질의문 데이터 화면에 출력되는 경우
+-> Union SQL Injection
+
+* SQL Error 메세지 출력
+-> Error Based SQL Injection
+
+* Blind SQLi
+select * from member
+
+
+* SQL Injection 대응 방안.
+1. Prepared Statement
+예외) order by, 컬럼, 테이블 부분
+
+2. White List 필터링.
+
+* 모의해킹 할 때 주의할 점.
+1. insert, delete, update
+-> 웬만하면 X : and 정도로만 테스트
+
+or 금지
+주석 금지.
+ or 1=1
+
+2. 주석 남용 금지
+
+3. 데이터 변조 금지.
+
+방화벽 (WAF)
+
+junk=AAAAA 어어엄청 많이 씀.
+
+보고서
+__________________________________
+
+**
+sotingAd=, (case+when+ascii(substr((select+user+from+dual),1,1))=0++then+1+else+(1/0)+end)
+sotingAd=,(콤마를 왜 쓰는지 웹개발을 통해 이해)
+
+order by title desc
+
+// 강의 참고
+Time Based Blind SQLi
+wait for delay
+이거밖에 없을때 씀
+__________________________________
+
+필터링.
+> and 1=1
+
+> and/**/1=1
+> and(1=1)
+
+__________________________________
+
+*XSS : 크로스 사이트 스크립팅
+> 크사
+> 크스스(?)
+> 크싸(?)
+
+* 크사
+-> 클라이언트 측!! 스크립트 삽입
+이용자.
+
+피해자 = 이용자.
+(SQL Injection은 서버를 이용한 공격이라고 할 수 있고, 크사는 클라이언트측)
+
+=> 클라이언트 스크립트.
+= 이용자 브러우저에서 실행.
+HTML CSS Javascript
+<input>
+
+=> 악성 스크립트.
+(이용자의 브라우저)
+
+공격 방식
+스크립트 삽입해서
+이용자의 브라우저에서 실행되게 만든다!
+
+* 모의해킹 취약점 안나오면 어떻게 해요?
+> 우리들의 친구 : 크사.
+
+(번외)결과보고서
+> 담당자 : "이게 왜 위험한거에요?"
+--> 결과보고서를 보고 위의 질문이 나오면 안됨
+
+* XSS
+> 스크립트 삽입.
+스크립트를 삽입하여 이용자의 브라우저에서 실행
+
+* 어떻게?
+스크립트 삽입?
+
+1. 서버에 저장.
+> 스크립트를 서버에 저장하여 클라이언트가 서버에 접속시 스크립트를 가져가도록 설정
+
+2. 서버의 에코기능 이용
+> 파라미터
+
+_________
+
+1. 서버에 저장.
+
+> 회원가입.
+> 게시판 글 작성.
+
+모든 데이터가 저장되는 곳에서 크사가 일어나는 것은 아님
+* 데이터가 저장되고, 출력되는 곳!
+당연히 데이터가 출력이 안되면 스크립트를 삽입할 이유가 없음
+
+게시판 글 작성.
+Burp : normaltic
+Burp에서 확인(browser 아님)
+
+서버 응답.
+
+//1. 내가 삽입한 글자가 화면에 출력된다 -> 크사 취약점
+
+1. 작성한 데이터가 화면에 응답되는거 확인.
+
+2. 특수문자 체크
+HTML에서 사용할 수 있는 문자 체크
+<'"> (4가지)           "'
+
+normaltic<'">   Hello<'">     '"
+위의 특수문자를 못쓰는 경우가 있음
+그렇기 때문에 위의 4개를 넣어보면서 쓸 수 있는 특수문자를 확인
+
+3. Javascript
+
+HTML
+<script>________</script>
+
+javascript
+
+POC: Proof Of Concept
+우리가 삽입한 클라이언트 측 코드가 브라우저에서 실행되는 것을 보여주기
+alert(1) -> 보고서쓰기 좋음
+___
+xss -> alert
+가끔씩 alert를 필터링하는 경우가 있음
+그러면
+
+prompt(1)
+confirm(1)
++ console.log(1)
+라는 차선책이 있다!
+
+안될 경우 글자수 제한이 있구나
+다른 곳에서 작성
+
+(가끔씩 xss 사용할때, 꺽쇠 때문에 뒤의 UI가 망가지는 경우 주의)
+
+<script>alert(1)</script>
+
+크사. : javascript 다루는 능력
+
+__________________________________
+
+위의 방식이
+> Stored XSS
+- 서버에 스크립트 저장.
+
+
+> Reflected XSS
+취약점 point
+파라미터 데이터가 서버 응답에 삽입되어 오는 곳.
+
+아이디 중복 체크
+(예시)
+normaltic
+
+normaltic 이라는 아이디는 사용할 수 있습니다.
+
+***request에서 넣은 파라미터가 response에 그대로 찍히는지 보면 됨
+
+<-> 반면에 stored XSS는 출력되는 위치가 다름
+
+
+
+Stored XSS
+저장하는 곳, 출력되는 곳 다를 수 있음
+
+Reflected XSS
+삽입, 출력하는 곳 같다.
+
+request 패킷에서 copy URL을 하여 직접 검색해보기
+
+???????????????????
+이게 왜 위험하지...
+
+Stored XSS
+-> 게시판 글 작성.
+-> 그 게시글을 읽는 사람에게 스크립트 전달
+실행.
+
+Reflected XSS
+-> 링크 전달 공격.
+-> 페이로드 : GET 메서드
+
+POST 메소드는 공격에 활용할 여지가 전혀 없음
+
+~~~~~?<script>wefw</script>
+링크를 만들어서 링크를 클릭하도록 만드는 공격 기법
+
+Change Request Method(POST -> GET)
+
+GET 메소드가 먹히지 않는 곳은 공격할 이유가 없음
+GET 메소드로 바꿔서 공격이 되면 취약점, 아니면 버림
+
+<QNA>
+슬래시를 안쓰고 자바 스크립트를 삽입하는 방법이 있기 때문에 /를 검사 안함
+
+미리 되는 특수문자, 명령어를 확인하고 들어감
+
+띄어쓰기 : +
+
+Stored XSS : 광역기
+Reflected XSS : 타겟팅
+
+Bug Bounty
+XSS -> 돈 안쳐줌.
+Stored XSS를 좀더 취급해줌
+
+_____________________________
+
+xss
+> 스크립트 삽입.
+> 피해자 웹 브라우저에서 실행!
+
+Stored
+Reflected
+
+alert(1)
+
+xss -> alert(1) : 실행된다!
+취약한 URL
+
+* 보고서 (free style)
+-> 막쓰라는거 아님.
+-> 보고서의 양식을 만들어보는 거
+-> 센스
+
+XSS 1
+어떤 페이지에 들어가고 어디에 스크립트를 삽입하고 실행이 되는지
+
+XSS 2
+
+제출 메일 normalticpublic@gmail.com
+
+*
+
+9주차 과제
+
+1. XSS 내용 정리
+
+2. XSS _ 취약점 찾기 & 보고서
+_> XSS 1,2,3,4,5,6
+
+제출 : normalticpublic@gmail.com
+
+3. 웹 개발 과제
+
+[+] 내가 만든 웹 사이트에서 xss 싹 다 찾아보기

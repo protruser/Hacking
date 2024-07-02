@@ -1,0 +1,21 @@
+body {
+    min-height: 100vh;
+    display: flex;
+}
+
+form {
+    border: 1px solid #000000;
+    text-align: center;
+    margin: auto;
+    width: 400px;
+    align-items: center;
+}
+
+input {
+    display: block;
+    margin: 10px auto;
+}
+
+button {
+    margin: 10px 0;
+}

